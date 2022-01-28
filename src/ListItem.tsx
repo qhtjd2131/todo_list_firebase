@@ -1,5 +1,9 @@
+import { QuerySnapshot } from "firebase/firestore";
 import React from "react";
+import { useState } from "react";
+import { useEffect } from "react";
 import styled from "styled-components";
+import { getDocSnap, getQuerySnapShot } from "./firebase";
 
 //styled
 
@@ -19,13 +23,40 @@ const ContentBox = styled.div`
   font-weight: 600;
 `;
 
-const ListItem = () => {
-  return (
-    <ItemWrapper>
-      <DateBox>date</DateBox>
 
-      <ContentBox>content</ContentBox>
-    </ItemWrapper>
+interface interfaceItem {
+  [index : string] : any;
+  content? : string;
+  date? : string;
+  check? : boolean;
+}
+const ListItem = () => {
+  const [items, setItems] = useState<interfaceItem>({});
+
+  useEffect(() => {
+    // const a = getDocSnap();
+    // console.log("a : ", a);
+
+    // const b = getQuerySnapShot();
+    // console.log("b : ", b);
+
+    getQuerySnapShot().then((qsnap) => {
+      setItems({...qsnap});
+      console.log("qsnap:", qsnap)
+      console.log(Object.keys(qsnap))
+    });
+  }, []);
+
+  return (
+    <div>
+      {Object.keys(items).map((item: any, index: number) => (
+        <ItemWrapper key={index}>
+          <DateBox>{items[item].date}</DateBox>
+          <ContentBox>{items[item].content}</ContentBox>
+        </ItemWrapper>
+      ))}
+      {console.log("items:", items)}
+    </div>
   );
 };
 
