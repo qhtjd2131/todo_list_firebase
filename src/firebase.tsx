@@ -4,6 +4,8 @@ import { getAnalytics } from "firebase/analytics";
 import { getFirestore } from "firebase/firestore";
 import { doc, getDoc } from "firebase/firestore";
 import { collection, query, getDocs } from "firebase/firestore";
+import { addDoc, setDoc } from "firebase/firestore";
+
 import { resourceLimits } from "worker_threads";
 
 // TODO: Add SDKs for Firebase products that you want to use
@@ -36,8 +38,10 @@ export const db = getFirestore(app);
 //     return cityList;
 //}
 
+//하나의 문서 가져오기
 export const getDocSnap = () => {
-  const docRef = doc(db, "items", "list-item");
+  const docName = "list-item"
+  const docRef = doc(db, "items", docName);
   const getDocSnap2 = async () => {
     return await getDoc(docRef);
   };
@@ -54,6 +58,8 @@ export const getDocSnap = () => {
   return docSnap;
 };
 
+
+// 전체문서가져오기
 interface InterfaceQsnap {
   [index: string]: any;
   id?: string;
@@ -77,3 +83,34 @@ export const getQuerySnapShot = () => {
   });
   return qsnap;
 };
+
+// 문서 추가하기
+
+interface IaddNewDocProps {
+  [index : string] : any;
+  content : string;
+  date : string;
+  check : boolean;
+}
+export const addNewDoc = (object :IaddNewDocProps) => {
+  const data = object;
+  // const writeDoc2 = async () => {
+  //   await setDoc(doc(db, "items", "item1"), {
+  //     content : _content,
+  //     date : _date,
+  //     check : _check,
+  //   })
+  // }
+  console.log(data);
+
+  const writeDoc = async () => {
+    // console.log(_content, _date, _check)
+    const docRef = await addDoc(collection(db, "items"), data);
+    // console.log("Document written with ID: ", docRef.id);
+    // return docRef.id;
+  }
+
+  writeDoc();
+
+  // return docId;
+}
