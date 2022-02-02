@@ -14,8 +14,6 @@ const TodoList = () => {
 
     <ListItem />
 
-    
-
   </ListWrapper>;
 };
 

@@ -94,23 +94,14 @@ interface IaddNewDocProps {
 }
 export const addNewDoc = (object :IaddNewDocProps) => {
   const data = object;
-  // const writeDoc2 = async () => {
-  //   await setDoc(doc(db, "items", "item1"), {
-  //     content : _content,
-  //     date : _date,
-  //     check : _check,
-  //   })
-  // }
-  console.log(data);
-
   const writeDoc = async () => {
     // console.log(_content, _date, _check)
     const docRef = await addDoc(collection(db, "items"), data);
     // console.log("Document written with ID: ", docRef.id);
-    // return docRef.id;
+    return docRef.id;
   }
 
-  writeDoc();
+  const docId = writeDoc();
 
-  // return docId;
+  return docId;
 }
