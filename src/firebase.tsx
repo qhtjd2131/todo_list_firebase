@@ -1,12 +1,10 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
-import { getFirestore } from "firebase/firestore";
+import { deleteDoc, getFirestore, QuerySnapshot } from "firebase/firestore";
 import { doc, getDoc } from "firebase/firestore";
 import { collection, query, getDocs } from "firebase/firestore";
-import { addDoc, setDoc } from "firebase/firestore";
-
-import { resourceLimits } from "worker_threads";
+import { addDoc, setDoc, where } from "firebase/firestore";
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -40,7 +38,7 @@ export const db = getFirestore(app);
 
 //하나의 문서 가져오기
 export const getDocSnap = () => {
-  const docName = "list-item"
+  const docName = "list-item";
   const docRef = doc(db, "items", docName);
   const getDocSnap2 = async () => {
     return await getDoc(docRef);
@@ -57,7 +55,6 @@ export const getDocSnap = () => {
   });
   return docSnap;
 };
-
 
 // 전체문서가져오기
 interface InterfaceQsnap {
@@ -87,21 +84,62 @@ export const getQuerySnapShot = () => {
 // 문서 추가하기
 
 interface IaddNewDocProps {
-  [index : string] : any;
-  content : string;
-  date : string;
-  check : boolean;
+  [index: string]: any;
+  content: string;
+  date: string;
+  check: boolean;
 }
-export const addNewDoc = (object :IaddNewDocProps) => {
+export const addNewDoc = (object: IaddNewDocProps, index: number) => {
   const data = object;
   const writeDoc = async () => {
     // console.log(_content, _date, _check)
     const docRef = await addDoc(collection(db, "items"), data);
     // console.log("Document written with ID: ", docRef.id);
     return docRef.id;
+  };
+
+  const writeDoc2 = async () => {
+    const docRef2 = await setDoc(
+      doc(db, "items", "item" + index.toString()),
+      data
+    );
+    return docRef2;
+  };
+
+  const docRef2 = writeDoc2();
+
+  // const docId = writeDoc();
+
+  return docRef2;
+};
+
+//문서 삭제하기
+interface IdeleteItemProps {
+  content: string;
+  date: string;
+}
+
+export const deleteItemDoc = (props: IdeleteItemProps) => {
+  console.log("11", props);
+  const q = query(
+    collection(db, "items"),
+    where("content", "==", props.content),
+    where("date", "==", props.date)
+  );
+
+  const getDocsFunc = async () => {
+    await getDocs(q).then(querySnapshot => {
+      console.log("querysnapshot", querySnapshot)
+      querySnapshot.forEach((doc)=>{
+        console.log(doc);
+        delDocsFunc(doc);
+      })
+    })
   }
 
-  const docId = writeDoc();
+  const delDocsFunc = async (doc : any) => {
+    await deleteDoc(doc.ref);
+  }
 
-  return docId;
-}
+  getDocsFunc();
+};

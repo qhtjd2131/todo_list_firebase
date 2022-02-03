@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useCallback } from "react";
 import { useEffect, useRef } from "react";
 import styled from "styled-components";
-import { getDocSnap, getQuerySnapShot, addNewDoc } from "./firebase";
+import { getDocSnap, getQuerySnapShot, addNewDoc, deleteItemDoc } from "./firebase";
 
 //styled
 
@@ -48,20 +48,26 @@ const DeleteButton = styled.button`
     background-color : #e7e7e7;
   }
 `;
-//
 
 
+//interface
 interface interfaceItem {
   [index: string]: any;
   content?: string;
   date?: string;
   check?: boolean;
 }
+interface Idata {
+  content : string;
+  date : string;
+}
+
 const ListItem = () => {
   const [items, setItems] = useState<interfaceItem>({});
   const [content, setContent] = useState<string>("");
   const [check, setCheck] = useState<boolean>(false);
   const [refreshCount, setRefreshCount] = useState(0);
+  const [itemIndex, setItemIndex] = useState(0);
   
   const getDate = useCallback(() => {
     const date = new Date();
@@ -72,16 +78,22 @@ const ListItem = () => {
 
   useEffect(() => {
     getQuerySnapShot().then((qsnap) => {
+      setItemIndex(Object.keys(qsnap).length);
       setItems({ ...qsnap });
     });
+    
   }, [refreshCount]);
+
+  useEffect(()=>{
+
+  }, [])
 
   const addItem = () => {
     addNewDoc({
       content: content,
       date: getDate(),
       check: check,
-    })
+    }, itemIndex)
       .then(() => {
         alert("입력 완료.");
         clearInput();
@@ -92,8 +104,9 @@ const ListItem = () => {
 
   }
 
-  const deleteItem = () => {
+  const deleteItem = ( props : Idata) => {
     // firebase.tsx 에 삭제함수 추가
+    deleteItemDoc(props);
 
   }
 
@@ -106,8 +119,9 @@ const ListItem = () => {
    addItem();
   };
   
-  const deleteButtonClickHandler =() => {
-    deleteItem();
+
+  const deleteButtonClickHandler =( data : Idata) => {
+    deleteItem(data);
   }
 
   const changeHandler = (e: any) => {
@@ -120,7 +134,12 @@ const ListItem = () => {
         <ItemWrapper key={index}>
           <DateBox>{items[item].date}</DateBox>
           <ContentBox>{items[item].content}</ContentBox>
-          <DeleteButton onClick={deleteButtonClickHandler}>X</DeleteButton>
+          <DeleteButton onClick={()=>{
+            deleteButtonClickHandler({
+              date : items[item].date,
+              content : items[item].content,
+            });
+          }}>X</DeleteButton>
         </ItemWrapper>
       ))}
 
