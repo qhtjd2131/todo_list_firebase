@@ -2,12 +2,17 @@ import { useState } from "react";
 import { useCallback } from "react";
 import { useEffect, useRef } from "react";
 import styled from "styled-components";
-import { getDocSnap, getQuerySnapShot, addNewDoc, deleteItemDoc } from "./firebase";
+import {
+  getDocSnap,
+  getQuerySnapShot,
+  addNewDoc,
+  deleteItemDoc,
+} from "./firebase";
 
 //styled
 
 const ItemWrapper = styled.div`
-position : relative;
+  position: relative;
   width: 100%;
   border: 1px solid black;
   box-sizing: border-box;
@@ -35,20 +40,19 @@ const InputContentBox = styled(InputDateBox)``;
 const AddButton = styled.button``;
 
 const DeleteButton = styled.button`
-  position : absolute;
-  right : 0rem;
-  top : 0rem;
+  position: absolute;
+  right: 0rem;
+  top: 0rem;
 
-  background-color : transparent;
-  width : 2rem;
-  height : 2rem;
-  font-size : 24px;
-  border : none;
+  background-color: transparent;
+  width: 2rem;
+  height: 2rem;
+  font-size: 24px;
+  border: none;
   &:active {
-    background-color : #e7e7e7;
+    background-color: #e7e7e7;
   }
 `;
-
 
 //interface
 interface interfaceItem {
@@ -58,8 +62,8 @@ interface interfaceItem {
   check?: boolean;
 }
 interface Idata {
-  content : string;
-  date : string;
+  content: string;
+  date: string;
 }
 
 const ListItem = () => {
@@ -68,32 +72,37 @@ const ListItem = () => {
   const [check, setCheck] = useState<boolean>(false);
   const [refreshCount, setRefreshCount] = useState(0);
   const [itemIndex, setItemIndex] = useState(0);
-  
+
   const getDate = useCallback(() => {
     const date = new Date();
-    const today =
-      date.getFullYear() + "-" + date.getMonth() + "-" + date.getDay();
+    const year = date.getFullYear();
+    const month = ("0" + (date.getMonth() + 1)).slice(-2);
+    const day = ("0" + date.getDate()).slice(-2);
+
+    const today = year + "-" + month + "-" + day;
+
+    console.log("today", today);
     return today;
-  },[]);
+  }, []);
 
   useEffect(() => {
     getQuerySnapShot().then((qsnap) => {
       setItemIndex(Object.keys(qsnap).length);
       setItems({ ...qsnap });
     });
-    
   }, [refreshCount]);
 
-  useEffect(()=>{
-
-  }, [])
+  useEffect(() => {}, []);
 
   const addItem = () => {
-    addNewDoc({
-      content: content,
-      date: getDate(),
-      check: check,
-    }, itemIndex)
+    addNewDoc(
+      {
+        content: content,
+        date: getDate(),
+        check: check,
+      },
+      itemIndex
+    )
       .then(() => {
         alert("입력 완료.");
         clearInput();
@@ -101,28 +110,32 @@ const ListItem = () => {
       .catch(() => {
         alert("오류 발생.");
       });
+  };
 
-  }
-
-  const deleteItem = ( props : Idata) => {
+  const deleteItem = async (props: Idata) => {
     // firebase.tsx 에 삭제함수 추가
-    deleteItemDoc(props);
 
-  }
+    await deleteItemDoc(props).then(() => {
+        alert("삭제 완료");
+        setRefreshCount((count) => count + 1);
+      })
+      .catch(() => {
+        alert("삭제 중 오류 발생");
+      });
+  };
 
   const clearInput = () => {
     setContent("");
-    setRefreshCount(count => count+1);
+    setRefreshCount((count) => count + 1);
   };
 
   const addButtonClickHandler = () => {
-   addItem();
+    addItem();
   };
-  
 
-  const deleteButtonClickHandler =( data : Idata) => {
+  const deleteButtonClickHandler = (data: Idata) => {
     deleteItem(data);
-  }
+  };
 
   const changeHandler = (e: any) => {
     setContent(e.target.value);
@@ -134,12 +147,16 @@ const ListItem = () => {
         <ItemWrapper key={index}>
           <DateBox>{items[item].date}</DateBox>
           <ContentBox>{items[item].content}</ContentBox>
-          <DeleteButton onClick={()=>{
-            deleteButtonClickHandler({
-              date : items[item].date,
-              content : items[item].content,
-            });
-          }}>X</DeleteButton>
+          <DeleteButton
+            onClick={() => {
+              deleteButtonClickHandler({
+                date: items[item].date,
+                content: items[item].content,
+              });
+            }}
+          >
+            X
+          </DeleteButton>
         </ItemWrapper>
       ))}
 

@@ -5,6 +5,7 @@ import { deleteDoc, getFirestore, QuerySnapshot } from "firebase/firestore";
 import { doc, getDoc } from "firebase/firestore";
 import { collection, query, getDocs } from "firebase/firestore";
 import { addDoc, setDoc, where } from "firebase/firestore";
+import { resolve } from "node:path/win32";
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -98,19 +99,19 @@ export const addNewDoc = (object: IaddNewDocProps, index: number) => {
     return docRef.id;
   };
 
-  const writeDoc2 = async () => {
-    const docRef2 = await setDoc(
-      doc(db, "items", "item" + index.toString()),
-      data
-    );
-    return docRef2;
-  };
+  // const writeDoc2 = async () => {
+  //   const docRef2 = await setDoc(
+  //     doc(db, "items", "item" + index.toString()),
+  //     data
+  //   );
+  //   return docRef2;
+  // };
 
-  const docRef2 = writeDoc2();
+  // const docRef2 = writeDoc2();
 
-  // const docId = writeDoc();
+  const docId = writeDoc();
 
-  return docRef2;
+  return docId;
 };
 
 //문서 삭제하기
@@ -120,7 +121,6 @@ interface IdeleteItemProps {
 }
 
 export const deleteItemDoc = (props: IdeleteItemProps) => {
-  console.log("11", props);
   const q = query(
     collection(db, "items"),
     where("content", "==", props.content),
@@ -128,18 +128,16 @@ export const deleteItemDoc = (props: IdeleteItemProps) => {
   );
 
   const getDocsFunc = async () => {
-    await getDocs(q).then(querySnapshot => {
-      console.log("querysnapshot", querySnapshot)
-      querySnapshot.forEach((doc)=>{
-        console.log(doc);
+    return await getDocs(q).then((querySnapshot) => {
+      querySnapshot.forEach((doc) => {
         delDocsFunc(doc);
-      })
-    })
-  }
+      });
+    });
+  };
 
-  const delDocsFunc = async (doc : any) => {
+  const delDocsFunc = async (doc: any) => {
     await deleteDoc(doc.ref);
-  }
+  };
 
-  getDocsFunc();
+  return getDocsFunc();
 };
