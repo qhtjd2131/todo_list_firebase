@@ -54,6 +54,13 @@ const DeleteButton = styled.button`
   }
 `;
 
+const NoItemBox = styled.div`
+  font-size : 2rem;
+  font-weight : 700;
+  text-align : center;
+  margin : 4rem 0;
+`;
+
 //interface
 interface interfaceItem {
   [index: string]: any;
@@ -114,8 +121,8 @@ const ListItem = () => {
 
   const deleteItem = async (props: Idata) => {
     // firebase.tsx 에 삭제함수 추가
-
-    await deleteItemDoc(props).then(() => {
+    await deleteItemDoc(props)
+      .then(() => {
         alert("삭제 완료");
         setRefreshCount((count) => count + 1);
       })
@@ -141,9 +148,11 @@ const ListItem = () => {
     setContent(e.target.value);
   };
 
-  return (
-    <div>
-      {Object.keys(items).map((item: any, index: number) => (
+  const renderItems = () => {
+    const itemsLength = Object.keys(items).length;
+    console.log(itemsLength);
+    if (itemsLength > 0) {
+      return Object.keys(items).map((item: any, index: number) => (
         <ItemWrapper key={index}>
           <DateBox>{items[item].date}</DateBox>
           <ContentBox>{items[item].content}</ContentBox>
@@ -158,7 +167,15 @@ const ListItem = () => {
             X
           </DeleteButton>
         </ItemWrapper>
-      ))}
+      ));
+    } else {
+      return <NoItemBox>아이템이 없습니다. 아래에서 추가해주세요.</NoItemBox>;
+    }
+  };
+
+  return (
+    <div>
+      {renderItems()}
 
       <AddItemWrapper>
         <DateBox>{getDate()}</DateBox>
