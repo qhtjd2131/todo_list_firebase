@@ -92,13 +92,14 @@ interface IaddNewDocProps {
 }
 export const addNewDoc = (object: IaddNewDocProps, index: number) => {
   const data = object;
+  
+  /* ID 자동 랜덤 지정 문서 추가*/
   const writeDoc = async () => {
-    // console.log(_content, _date, _check)
     const docRef = await addDoc(collection(db, "items"), data);
-    // console.log("Document written with ID: ", docRef.id);
     return docRef.id;
   };
 
+  /* ID 지정 문서 추가 */
   // const writeDoc2 = async () => {
   //   const docRef2 = await setDoc(
   //     doc(db, "items", "item" + index.toString()),
@@ -109,8 +110,7 @@ export const addNewDoc = (object: IaddNewDocProps, index: number) => {
 
   // const docRef2 = writeDoc2();
 
-  const docId = writeDoc();
-
+  const docId = writeDoc()
   return docId;
 };
 

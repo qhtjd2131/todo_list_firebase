@@ -37,7 +37,12 @@ const InputDateBox = styled.input`
 `;
 const InputContentBox = styled(InputDateBox)``;
 
-const AddButton = styled.button``;
+const AddButton = styled.button`
+  font-size : 4rem;
+  background-color : #e5e5e5;
+  border : none;
+  margin : 1rem 0;
+`;
 
 const DeleteButton = styled.button`
   position: absolute;
@@ -55,10 +60,16 @@ const DeleteButton = styled.button`
 `;
 
 const NoItemBox = styled.div`
-  font-size : 2rem;
-  font-weight : 700;
+  font-size: 2rem;
+  font-weight: 700;
+  text-align: center;
+  margin: 4rem 0;
+`;
+
+const LoadingBox = styled.div`
+  font-size: 2rem;
   text-align : center;
-  margin : 4rem 0;
+  margin : 5rem 0;
 `;
 
 //interface
@@ -79,13 +90,13 @@ const ListItem = () => {
   const [check, setCheck] = useState<boolean>(false);
   const [refreshCount, setRefreshCount] = useState(0);
   const [itemIndex, setItemIndex] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
 
   const getDate = useCallback(() => {
     const date = new Date();
     const year = date.getFullYear();
     const month = ("0" + (date.getMonth() + 1)).slice(-2);
     const day = ("0" + date.getDate()).slice(-2);
-
     const today = year + "-" + month + "-" + day;
 
     console.log("today", today);
@@ -96,6 +107,7 @@ const ListItem = () => {
     getQuerySnapShot().then((qsnap) => {
       setItemIndex(Object.keys(qsnap).length);
       setItems({ ...qsnap });
+      setIsLoading(false);
     });
   }, [refreshCount]);
 
@@ -125,6 +137,7 @@ const ListItem = () => {
       .then(() => {
         alert("삭제 완료");
         setRefreshCount((count) => count + 1);
+        setIsLoading(true);
       })
       .catch(() => {
         alert("삭제 중 오류 발생");
@@ -134,6 +147,7 @@ const ListItem = () => {
   const clearInput = () => {
     setContent("");
     setRefreshCount((count) => count + 1);
+    setIsLoading(true);
   };
 
   const addButtonClickHandler = () => {
@@ -173,10 +187,8 @@ const ListItem = () => {
     }
   };
 
-  return (
-    <div>
-      {renderItems()}
-
+  const renderAddItem = () => {
+    return (
       <AddItemWrapper>
         <DateBox>{getDate()}</DateBox>
         <InputContentBox
@@ -185,18 +197,24 @@ const ListItem = () => {
           onChange={changeHandler}
           value={content}
         />
-        <AddButton onClick={addButtonClickHandler}>Add</AddButton>
+        <AddButton onClick={addButtonClickHandler}>+</AddButton>
       </AddItemWrapper>
+    );
+  };
+
+  return isLoading ? (
+    <LoadingBox> Loading ... </LoadingBox>
+  ) : (
+    <div>
+      {renderItems()}
+      {renderAddItem()}
     </div>
   );
 };
 
 // 아이템 삭제
-
 // 아이템 없어도 모양 유지
-
 // 아이템 추가
-
 // 등등 생각
 
 export default ListItem;
