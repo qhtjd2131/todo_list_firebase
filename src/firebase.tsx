@@ -1,7 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
-import { deleteDoc, getFirestore, QuerySnapshot } from "firebase/firestore";
+import { deleteDoc, getFirestore, orderBy, QuerySnapshot } from "firebase/firestore";
 import { doc, getDoc } from "firebase/firestore";
 import { collection, query, getDocs } from "firebase/firestore";
 import { addDoc, setDoc, where } from "firebase/firestore";
@@ -65,7 +65,7 @@ interface InterfaceQsnap {
 }
 
 export const getQuerySnapShot = () => {
-  const q = query(collection(db, "items"));
+  const q = query(collection(db, "items"), orderBy("timeStamp"));
   const getQuerySnapshot2 = async () => {
     return await getDocs(q);
   };
@@ -89,6 +89,7 @@ interface IaddNewDocProps {
   content: string;
   date: string;
   check: boolean;
+  timeStamp : number;
 }
 export const addNewDoc = (object: IaddNewDocProps, index: number) => {
   const data = object;

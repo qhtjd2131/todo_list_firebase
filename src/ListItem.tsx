@@ -14,12 +14,16 @@ import {
 const ItemWrapper = styled.div`
   position: relative;
   width: 100%;
-  border: 1px solid black;
+  border: none;
+
   box-sizing: border-box;
   padding: 1rem;
   display: flex;
   flex-direction: column;
   margin: 1rem 0;
+  border-radius : 6px;
+  background-color : white;
+
 `;
 const DateBox = styled.div`
   margin-bottom: 0.5rem;
@@ -34,6 +38,7 @@ const AddItemWrapper = styled(ItemWrapper)``;
 
 const InputDateBox = styled.input`
   height: 2rem;
+  font-size : 2rem;
 `;
 const InputContentBox = styled(InputDateBox)``;
 
@@ -42,6 +47,10 @@ const AddButton = styled.button`
   background-color : #e5e5e5;
   border : none;
   margin : 1rem 0;
+  cursor : pointer;
+  &:hover{
+    border : 1px solid black;
+  }
 `;
 
 const DeleteButton = styled.button`
@@ -54,6 +63,7 @@ const DeleteButton = styled.button`
   height: 2rem;
   font-size: 24px;
   border: none;
+  cursor : pointer;
   &:active {
     background-color: #e7e7e7;
   }
@@ -119,6 +129,7 @@ const ListItem = () => {
         content: content,
         date: getDate(),
         check: check,
+        timeStamp : Date.now(),
       },
       itemIndex
     )

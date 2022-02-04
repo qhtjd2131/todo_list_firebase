@@ -14,7 +14,7 @@ const LogoTitle = styled.p`
 
   margin : 1rem 0;
 
-  border: 1px solid black;
+  border: none;
   padding : 4px;
 `;
 

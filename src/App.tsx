@@ -1,16 +1,14 @@
-import React from 'react';
 import styled from 'styled-components';
 import TodoList from './TodoList';
 import Logo from "./Logo";
 
-
 const GlobalWrapper = styled.section`
   width : 48rem;
   box-sizing : border-box;
-  padding : 1rem;
   margin : 0 auto;
-
-  border : 1px solid black;
+  border : none;
+  background-color: #d5d5f3;
+ 
 `;
 
 
@@ -18,9 +16,7 @@ const App = () => {
   return (
     <GlobalWrapper>
       <Logo />
-      
       <TodoList />
-
     </GlobalWrapper>
   )
 }
