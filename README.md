@@ -277,7 +277,76 @@ export const deleteItemDoc = (props: IdeleteItemProps) => {
 ```
 
 
-## firebase/hosting
+## firebase/hosting, 호스팅 및 배포하기
 
 호스팅을 하기위해 아래의 절차를 진행했습니다.
+
+### firebase CLI 설치
+
+```
+npm install -g firebase-tools
+```
+
+### firebase 로그인
+```
+firebase login
+```
+
+### firebase init
+
+```
+firebase init
+```
+
+firebase init을 이용하여 호스팅 설정 파일 생성합니다. `firebase.json` 파일과 `.firebaserc`파일이 생성됩니다.
+
+### firebase.json 설정
+
+우리는 프로젝트를 build하고 그 결과물을 배포할 예정입니다. 따라서 `firebase.json` 파일의 옵션을 다음과 같이 설정합니다.
+
+**firebase.json**
+```json
+{
+  "hosting": {
+    "public": "build",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
+}
+```
+
+`hosting/public` 필드만 변경했습니다. 나머지는 모두 default로 설정된 값입니다.
+
+### build 후 배포
+
+프로젝트를 build 합니다.
+
+```
+npm run build
+```
+
+그리고 firebase 명령어를 통해 배포합니다.
+```
+firebase deploy
+```
+
+![image](https://user-images.githubusercontent.com/34260967/152685924-abb16b46-a351-45a6-9b1c-ca9c63ab3b3b.png)
+
+app이 배포된 링크를 쉘에서 가르쳐줍니다. 해당 링크로 접속해봅시다.
+
+![image](https://user-images.githubusercontent.com/34260967/152685949-19f0755d-92d7-45a9-92f5-87f7beb66af8.png)
+
+잘 배포된것을 확인했습니다.
+
+
+
 
