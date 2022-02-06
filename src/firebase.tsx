@@ -5,11 +5,9 @@ import { deleteDoc, getFirestore, orderBy, QuerySnapshot } from "firebase/firest
 import { doc, getDoc } from "firebase/firestore";
 import { collection, query, getDocs } from "firebase/firestore";
 import { addDoc, setDoc, where } from "firebase/firestore";
-import { resolve } from "node:path/win32";
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
-
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
@@ -25,8 +23,6 @@ const firebaseConfig = {
 
 // Initialize Firebase
 export const app = initializeApp(firebaseConfig);
-// export default app;
-
 export const analytics = getAnalytics(app);
 export const db = getFirestore(app);
 
