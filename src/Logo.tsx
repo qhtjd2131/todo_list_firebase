@@ -18,10 +18,16 @@ const LogoTitle = styled.p`
   padding : 4px;
 `;
 
-const Logo = () => {
+//interface
+
+interface ILogo {
+  [index : string ] : any;
+  username : string;
+}
+const Logo = ( { username } : ILogo) => {
   return (
     <LogoWrapper>
-      <LogoTitle>To Do List</LogoTitle>
+      <LogoTitle>{username}님의 To Do List</LogoTitle>
     </LogoWrapper>
   );
 };

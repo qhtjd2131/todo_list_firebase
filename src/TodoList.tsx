@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
+import { getSignInWithPopup } from "./firebase";
 import ListItem from "./ListItem";
 
 //styled
@@ -14,6 +15,12 @@ const ListWrapper = styled.div`
 `;
 
 const TodoList = () => {
+
+  useEffect(()=>{
+    // getSignInWithPopup();
+  },[])
+
+  
   return (
     <ListWrapper>
       <ListItem />
