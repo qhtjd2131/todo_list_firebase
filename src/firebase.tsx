@@ -17,6 +17,7 @@ import {
   onAuthStateChanged,
   signOut,
 } from "firebase/auth";
+import { resolve } from "node:path/win32";
 
 const googleProvider = new GoogleAuthProvider();
 
@@ -174,7 +175,6 @@ export const getSignInWithPopup = () => {
       };
     })
     .catch((error) => {
-      // Handle Errors here.
       const errorCode = error.code;
       const errorMessage = error.message;
       // The email of the user's account used.
@@ -192,27 +192,23 @@ export const getSignInWithPopup = () => {
 
 export const getOnAuthChanged = () => {
   console.log("로그인된지 확인");
-  let result;
-  onAuthStateChanged(auth, (user) => {
-    console.log("로그인된 유저는:", user);
-    if (user) {
-      // User is signed in, see docs for a list of available properties
-      // https://firebase.google.com/docs/reference/js/firebase.User
-      console.log("user:", user);
-      result = {...user, token : "토큰을 구할방법 없을까"};
-      // ...
-    } else {
-      console.log("로그인된유저 없음");
-      result =  null;
-    }
+  return new Promise((resolve, reject) => {
+    onAuthStateChanged(auth, (user) => {
+      console.log("로그인된 유저는:", user);
+      if (user) {
+        console.log("user:", user);
+        resolve({ user, token: "토큰을 구할방법 없을까" });
+      } else {
+        console.log("로그인된유저 없음");
+        resolve(null);
+      }
+    });
   });
-
-  return result;
 };
 
 //로그아웃
 export const excuteLogout = () => {
   console.log("로그아웃함수 실행");
-  
+
   return signOut(auth);
 };
