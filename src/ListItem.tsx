@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useCallback } from "react";
 import { useEffect, useRef } from "react";
 import styled from "styled-components";
+import { userInfoContext } from "./App";
 import {
   getDocSnap,
   getQuerySnapShot,
@@ -21,9 +22,8 @@ const ItemWrapper = styled.div`
   display: flex;
   flex-direction: column;
   margin: 1rem 0;
-  border-radius : 6px;
-  background-color : white;
-
+  border-radius: 6px;
+  background-color: white;
 `;
 const DateBox = styled.div`
   margin-bottom: 0.5rem;
@@ -38,18 +38,18 @@ const AddItemWrapper = styled(ItemWrapper)``;
 
 const InputDateBox = styled.input`
   height: 2rem;
-  font-size : 2rem;
+  font-size: 2rem;
 `;
 const InputContentBox = styled(InputDateBox)``;
 
 const AddButton = styled.button`
-  font-size : 4rem;
-  background-color : #e5e5e5;
-  border : none;
-  margin : 1rem 0;
-  cursor : pointer;
-  &:hover{
-    border : 1px solid black;
+  font-size: 4rem;
+  background-color: #e5e5e5;
+  border: none;
+  margin: 1rem 0;
+  cursor: pointer;
+  &:hover {
+    border: 1px solid black;
   }
 `;
 
@@ -63,7 +63,7 @@ const DeleteButton = styled.button`
   height: 2rem;
   font-size: 24px;
   border: none;
-  cursor : pointer;
+  cursor: pointer;
   &:active {
     background-color: #e7e7e7;
   }
@@ -78,8 +78,8 @@ const NoItemBox = styled.div`
 
 const LoadingBox = styled.div`
   font-size: 2rem;
-  text-align : center;
-  margin : 5rem 0;
+  text-align: center;
+  margin: 5rem 0;
 `;
 
 //interface
@@ -90,8 +90,8 @@ interface interfaceItem {
   check?: boolean;
 }
 interface Idata {
-  content: string;
-  date: string;
+  timeStamp : number;
+  uid : string;
 }
 
 const ListItem = () => {
@@ -101,6 +101,8 @@ const ListItem = () => {
   const [refreshCount, setRefreshCount] = useState(0);
   const [itemIndex, setItemIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+
+  const { userInfo } = useContext(userInfoContext);
 
   const getDate = useCallback(() => {
     const date = new Date();
@@ -112,7 +114,8 @@ const ListItem = () => {
   }, []);
 
   useEffect(() => {
-    getQuerySnapShot().then((qsnap) => {
+
+    getQuerySnapShot(userInfo.user.uid).then((qsnap) => {
       setItemIndex(Object.keys(qsnap).length);
       setItems({ ...qsnap });
       setIsLoading(false);
@@ -127,7 +130,8 @@ const ListItem = () => {
         content: content,
         date: getDate(),
         check: check,
-        timeStamp : Date.now(),
+        timeStamp: Date.now(),
+        uid : userInfo.user.uid,
       },
       itemIndex
     )
@@ -141,7 +145,6 @@ const ListItem = () => {
   };
 
   const deleteItem = async (props: Idata) => {
-    // firebase.tsx 에 삭제함수 추가
     await deleteItemDoc(props)
       .then(() => {
         alert("삭제 완료");
@@ -181,8 +184,8 @@ const ListItem = () => {
           <DeleteButton
             onClick={() => {
               deleteButtonClickHandler({
-                date: items[item].date,
-                content: items[item].content,
+                timeStamp : items[item].timeStamp,
+                uid : userInfo.user.uid,
               });
             }}
           >

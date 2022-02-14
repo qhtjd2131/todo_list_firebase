@@ -17,7 +17,7 @@ import {
   onAuthStateChanged,
   signOut,
 } from "firebase/auth";
-import { resolve } from "node:path/win32";
+import { timeStamp } from "console";
 
 const googleProvider = new GoogleAuthProvider();
 
@@ -75,8 +75,13 @@ interface InterfaceQsnap {
   data?: () => any;
 }
 
-export const getQuerySnapShot = () => {
-  const q = query(collection(db, "items"), orderBy("timeStamp"));
+interface IgetQureySnapShot {
+  [index: string]: any;
+  uid: string;
+}
+
+export const getQuerySnapShot = ( uid : string) => {
+  const q = query(collection(db, uid), orderBy("timeStamp"));
   const getQuerySnapshot2 = async () => {
     return await getDocs(q);
   };
@@ -101,13 +106,20 @@ interface IaddNewDocProps {
   date: string;
   check: boolean;
   timeStamp: number;
+  uid : string;
 }
 export const addNewDoc = (object: IaddNewDocProps, index: number) => {
   const data = object;
 
   /* ID 자동 랜덤 지정 문서 추가*/
   const writeDoc = async () => {
-    const docRef = await addDoc(collection(db, "items"), data);
+    const fields = {
+      content : object.content,
+      date : object.date,
+      check : object.check,
+      timeStamp : object.timeStamp,
+    }
+    const docRef = await addDoc(collection(db, data.uid), fields);
     return docRef.id;
   };
 
@@ -128,15 +140,14 @@ export const addNewDoc = (object: IaddNewDocProps, index: number) => {
 
 //문서 삭제하기
 interface IdeleteItemProps {
-  content: string;
-  date: string;
+  timeStamp : number;
+  uid : string;
 }
 
 export const deleteItemDoc = (props: IdeleteItemProps) => {
   const q = query(
-    collection(db, "items"),
-    where("content", "==", props.content),
-    where("date", "==", props.date)
+    collection(db, props.uid),
+    where("timeStamp", "==", props.timeStamp),
   );
 
   const getDocsFunc = async () => {
@@ -181,7 +192,6 @@ export const getSignInWithPopup = () => {
       const email = error.email;
       // The AuthCredential type that was used.
       const credential = GoogleAuthProvider.credentialFromError(error);
-      // ...
       alert(errorMessage + "\n" + credential);
     });
 
@@ -209,6 +219,9 @@ export const getOnAuthChanged = () => {
 //로그아웃
 export const excuteLogout = () => {
   console.log("로그아웃함수 실행");
+  // googleProvider.setCustomParameters({
+  //   prompt: 'select_account'
+  // });
 
   return signOut(auth);
 };

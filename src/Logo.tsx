@@ -12,19 +12,19 @@ const LogoTitle = styled.p`
   font-weight: 700;
   text-align: center;
 
-  margin : 1rem 0;
+  margin: 1rem 0;
 
   border: none;
-  padding : 4px;
+  padding: 4px;
 `;
 
 //interface
 
 interface ILogo {
-  [index : string ] : any;
-  username : string;
+  [index: string]: any;
+  username: string;
 }
-const Logo = ( { username } : ILogo) => {
+const Logo = ({ username }: ILogo) => {
   return (
     <LogoWrapper>
       <LogoTitle>{username}님의 To Do List</LogoTitle>
