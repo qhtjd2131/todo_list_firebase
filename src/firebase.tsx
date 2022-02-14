@@ -21,6 +21,10 @@ import { timeStamp } from "console";
 
 const googleProvider = new GoogleAuthProvider();
 
+googleProvider.setCustomParameters({
+  prompt: 'select_account'
+});
+
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 // Your web app's Firebase configuration
@@ -171,6 +175,7 @@ const auth = getAuth();
 
 export const getSignInWithPopup = () => {
   console.log("로그인팝업창생성");
+  
   const loginData = signInWithPopup(auth, googleProvider)
     .then((result) => {
       // This gives you a Google Access Token. You can use it to access the Google API.
@@ -219,9 +224,6 @@ export const getOnAuthChanged = () => {
 //로그아웃
 export const excuteLogout = () => {
   console.log("로그아웃함수 실행");
-  // googleProvider.setCustomParameters({
-  //   prompt: 'select_account'
-  // });
 
   return signOut(auth);
 };
